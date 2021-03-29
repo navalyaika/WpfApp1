@@ -1,87 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace WpfApp1
 {
-    public class ModelAnswer : INotifyPropertyChanged
+    /// <summary>
+    /// класс описывающий функции типа F=ax+by+c
+    /// </summary>
+    public class ModelAnswer
     {
-        private int x;
-        private int y;
-        private int rez;
-        private ModelFunctionTypes tf = new ModelFunctionTypes();
-
-
-
-        public ModelFunctionTypes TF
+        //конструктор по умолчанию
+        public ModelAnswer()
         {
-            get { return tf; }
-            set
-            {
-                tf = value;
-                OnPropertyChanged("TF");
-            }
+            X = 0;
+            Y = 0;
+            A = 0;
+            B = 0;
+            C = 1;
+            F = 0;
+            TF = new ModelFunctionTypes { TypeFunction = TypeFunction.линейная.ToString(), CoefficientsC = new List<int>() { 1, 2, 3, 4, 5 } };
         }
-
-        public int X
-        {
-            get { return x; }
-            set
-            {
-                x = value;
-                OnPropertyChanged("GetAnswer");
-            }
-        }
-        public int Y
-        {
-            get { return y; }
-            set
-            {
-                y = value;
-                OnPropertyChanged("GetAnswer");
-            }
-        }
-        public int Rez
-        {
-            get 
-            {
-                return rez;
-            }
-            set
-            {
-                rez = value;
-                OnPropertyChanged("Rez");
-            }
-        }
-
-        public int GetAnswer
-        {
-            get 
-            {
-                if (tf.TypeFunction == "линейная")
-                    rez = (tf.Ca * x) + tf.Cb + tf.SelectCoeficientC;
-                else if(tf.TypeFunction == "квадратичная")
-                    rez = (tf.Ca * (x^2)) + (tf.Cb*y) + tf.SelectCoeficientC;
-                else if (tf.TypeFunction == "кубическая")
-                    rez = (tf.Ca * (x ^ 3)) + (tf.Cb * (y^2)) + tf.SelectCoeficientC;
-                else if (tf.TypeFunction == "4-ой степени")
-                    rez = (tf.Ca * (x ^ 4)) + (tf.Cb * (y^3)) + tf.SelectCoeficientC;
-                else if (tf.TypeFunction == "5-ой степени")
-                    rez = (tf.Ca * (x ^ 5)) + (tf.Cb * (y^4)) + tf.SelectCoeficientC;
-                return rez;
-            }
-            set
-            {
-                rez = value;
-                OnPropertyChanged("GetAnswer");
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
+        //тип функции и возможные коэффициенты c
+        public ModelFunctionTypes TF { get; set; }
+        //параметр x
+        public int X { get; set; }
+        //параметр y
+        public int Y { get; set; }
+        //значение функции
+        public int F { get; set; }
+        //коэффициент a
+        public int A { get; set; }
+        //коэффициент b
+        public int B { get; set; }
+        //коэффициент c
+        public int C { get; set; }
+        
     }
 }

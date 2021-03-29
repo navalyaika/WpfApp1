@@ -6,12 +6,6 @@
         xmlns:local="clr-namespace:WpfApp1" xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Window.Resources>
-
-        <local:ViewModel x:Key="Vm"/>
-        <local:Converter x:Key="Converter"/>
-        <local:ConvertCBtoInt x:Key="toint"/>
-    </Window.Resources>
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -19,86 +13,54 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid DataContext="{StaticResource Vm}">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="10*"/>
                 <RowDefinition Height="10*"/>
             </Grid.RowDefinitions>
-            <TextBlock>Выбор функции</TextBlock>
-            <ListBox Grid.Row="1" x:Name="functions" HorizontalContentAlignment="Center"
+            <TextBlock>Выбор функции</TextBlock>            
+            <ListBox Grid.Row="1" HorizontalContentAlignment="Center"
                      ItemsSource="{Binding FunctionTypes}" 
-                     SelectedItem="{Binding SelectedFunctionType}">
+                     IsSynchronizedWithCurrentItem="True"
+                     SelectedItem="{Binding SelectedAnswer.TF, UpdateSourceTrigger=PropertyChanged}" SelectionMode="Single">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding TypeFunction}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <StackPanel x:Name="coefficients" Grid.Row="2">
+            <StackPanel Grid.Row="2">
                 <TextBlock>Введите коэффициенты a и b</TextBlock>
-                <TextBox x:Name="coefficient_a" DataContext="{Binding SelectedFunctionType}" Text="{Binding Ca, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-                <TextBox x:Name="coefficient_b" DataContext="{Binding SelectedFunctionType}" Text="{Binding Cb, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                <TextBox Text="{Binding SelectedAnswer.A, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"></TextBox>
+                <TextBox Text="{Binding SelectedAnswer.B, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged"></TextBox>
                 <TextBlock>Выберите коэффициент c</TextBlock>
-                <ComboBox x:Name="coefficient_c" 
-                          DataContext="{Binding SelectedFunctionType}" SelectedValue="{Binding SelectCoeficientC, Converter={StaticResource toint}, UpdateSourceTrigger=PropertyChanged}">
-                    <ComboBoxItem Content="{Binding C1, UpdateSourceTrigger=PropertyChanged}"/>
-                    <ComboBoxItem Content="{Binding C2, UpdateSourceTrigger=PropertyChanged}"/>
-                    <ComboBoxItem Content="{Binding C3, UpdateSourceTrigger=PropertyChanged}"/>
-                    <ComboBoxItem Content="{Binding C4, UpdateSourceTrigger=PropertyChanged}"/>
-                    <ComboBoxItem Content="{Binding C5, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox 
+                    ItemsSource="{Binding SelectedAnswer.TF.CoefficientsC, UpdateSourceTrigger=PropertyChanged}" 
+                    IsSynchronizedWithCurrentItem="True"
+                    SelectedItem="{Binding SelectedAnswer.C, UpdateSourceTrigger=PropertyChanged}">
                 </ComboBox>
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Column="1"  DataContext="{StaticResource Vm}">
-            <DataGrid x:Name="gridfxy" 
-                       AutoGenerateColumns="False" CanUserAddRows="True" IsSynchronizedWithCurrentItem="True"
-                      SelectionMode="Single"
-                      ItemsSource="{Binding Answers}"
-                      SelectedItem="{Binding SelectedAnswer, Converter={StaticResource Converter}}">
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="DatatemplateX">
-                        <StackPanel>
-                            <TextBlock Text="{Binding X, UpdateSourceTrigger=PropertyChanged}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="EditindatatemplateX">
-                        <TextBox Text="{Binding X, UpdateSourceTrigger=PropertyChanged}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="DatatemplateY">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Y, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="EditindatatemplateY">
-                        <TextBox Text="{Binding Y, UpdateSourceTrigger=PropertyChanged}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="DatatemplateF">
-                        <StackPanel>
-                            <TextBlock Text="{Binding GetAnswer, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="EditindatatemplateF">
-                        <TextBox Text="{Binding GetAnswer, UpdateSourceTrigger=PropertyChanged}" />
-                    </DataTemplate>
 
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="X" 
-                                            CellTemplate="{StaticResource DatatemplateX}"
-                                            CellEditingTemplate="{StaticResource EditindatatemplateX}"
-                                            Width="*"/>
-                    <DataGridTemplateColumn Header="Y" 
-                                            CellTemplate="{StaticResource DatatemplateY}"
-                                            CellEditingTemplate="{StaticResource EditindatatemplateY}"
-                                            Width="*"/>
-                    <DataGridTemplateColumn Header="F(x,y)" 
-                                            CellTemplate="{StaticResource DatatemplateF}"
-                                            CellEditingTemplate="{StaticResource EditindatatemplateF}"
-                                            Width="*"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+        <DataGrid Grid.Column="1"
+                      AutoGenerateColumns="False" CanUserAddRows="True" IsSynchronizedWithCurrentItem="True"
+                      SelectionMode="Single" VerticalAlignment="Top"
+                      ItemsSource="{Binding Answers}"
+                      SelectedItem="{Binding SelectedAnswer, UpdateSourceTrigger=PropertyChanged}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="X" 
+                                        Binding="{Binding X,  UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+                <DataGridTextColumn Header="Y" 
+                                        Binding="{Binding Y, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+                <DataGridTextColumn Header="F(x,y)" IsReadOnly="True"
+                                        Binding="{Binding F, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>
